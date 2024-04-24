@@ -1,8 +1,8 @@
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
 import Loader from "../component/Loader";
-import AlchemistWorkshop from "../component/AlchemistWorkshop";
-import { Environment, OrbitControls } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
+import Lab from "../models/Lab";
 
 export default function Home() {
   return (
@@ -13,8 +13,8 @@ export default function Home() {
       >
         <Suspense fallback={<Loader />}>
           <directionalLight position={[1, 1, 1]} intensity={50} />{" "}
-          <AlchemistWorkshop />
           <OrbitControls />
+          <Lab />
         </Suspense>
       </Canvas>
     </section>
