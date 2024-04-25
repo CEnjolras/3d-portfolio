@@ -3,9 +3,9 @@ import { Suspense } from "react";
 import Loader from "../component/Loader";
 import { OrbitControls, Environment } from "@react-three/drei";
 import Lab from "../models/Lab/Lab";
-import Sky from "../models/Sky/Sky";
 import { useRef } from "react";
 import * as THREE from "three";
+import MeshButton from "./MeshButton";
 
 export default function Scene({ view, clicked }) {
   const vec = new THREE.Vector3();
@@ -39,13 +39,13 @@ export default function Scene({ view, clicked }) {
       <axesHelper args={[5]} />
       <Environment preset="night" background backgroundBlurriness={0.4} />
       <OrbitControls />
-      <Sky />
       <Lab
         position={[0, -1, 0]}
         scale={[1, 1, 1]}
         rotation={[0, 0, 0]}
         clicked={clicked}
       />
+      <MeshButton position={[-0.4, 0.8, 1.7]} rotation={[0, 1, 0]} />
     </Suspense>
   );
 }

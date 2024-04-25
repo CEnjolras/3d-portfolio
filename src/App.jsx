@@ -9,6 +9,7 @@ export default function App() {
       <Route path="/skills" element={<Home view="skills" />} />
       <Route path="/blog" element={<Home view="blog" />} />
       <Route path="/contact" element={<Home view="contact" />} />
+      <Route path="/dev" element={<Home view="dev" />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

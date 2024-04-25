@@ -1,9 +1,6 @@
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Suspense, useEffect, useState } from "react";
-import Loader from "../component/Loader";
-import { OrbitControls, Environment } from "@react-three/drei";
-import Lab from "../models/Lab/Lab";
-import Sky from "../models/Sky/Sky";
+import { Canvas } from "@react-three/fiber";
+import { useState } from "react";
+
 import Header from "../component/Header";
 import Scene from "../component/Scene";
 
