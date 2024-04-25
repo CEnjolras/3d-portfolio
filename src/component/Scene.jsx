@@ -7,58 +7,32 @@ import Sky from "../models/Sky/Sky";
 import { useRef } from "react";
 import * as THREE from "three";
 
-const scenesPositions = {
-  home: {
-    lab: {
-      screenScale: [1, 1, 1],
-      screenPosition: [0, -2, -0.5],
-      rotation: [0, -2.5, 0],
-      mobile: {
-        screenScale: [0.8, 0.8, 0.8],
-        screenPosition: [0, -1.5, 0],
-      },
-    },
-  },
-  skills: {
-    lab: {
-      screenScale: [1, 1, 1],
-      screenPosition: [0, -1.5, 0],
-      rotation: [0, -0.5, 0],
-    },
-  },
-};
-
 export default function Scene({ view, clicked }) {
   const vec = new THREE.Vector3();
 
   useFrame((state) => {
     if (view === "home") {
-      state.camera.position.lerp(vec.set(10, 10, 10), 0.1);
+      state.camera.position.lerp(vec.set(2, 2, -5), 0.075);
       state.camera.updateProjectionMatrix();
     }
 
     if (view === "skills") {
-      state.camera.position.lerp(vec.set(0, 0, 0), 0.1);
+      state.camera.position.lerp(vec.set(2, 2, 5), 0.075);
       state.camera.updateProjectionMatrix();
     }
-    return null;
-  });
 
-  function adjustLabForScreenSize() {
-    let { screenScale, screenPosition, rotation } = scenesPositions[view].lab;
-
-    if (window.innerWidth < 768) {
-      screenScale =
-        scenesPositions[view].lab.mobile?.screenScale || screenScale;
-      screenPosition =
-        scenesPositions[view].lab.mobile?.screenPosition || screenPosition;
-      rotation = scenesPositions[view].lab.mobile?.rotation || rotation;
+    if (view === "blog") {
+      state.camera.position.lerp(vec.set(-5, 2, 5), 0.075);
+      state.camera.updateProjectionMatrix();
     }
 
-    return [screenScale, screenPosition, rotation];
-  }
+    if (view === "contact") {
+      state.camera.position.lerp(vec.set(0.75, 0.5, 1), 0.075);
+      state.camera.updateProjectionMatrix();
+    }
 
-  const [labScale, labPosition, labRotation] = adjustLabForScreenSize();
+    return null;
+  });
 
   return (
     <Suspense fallback={<Loader />}>
@@ -67,9 +41,9 @@ export default function Scene({ view, clicked }) {
       <OrbitControls />
       <Sky />
       <Lab
-        position={labPosition}
-        scale={labScale}
-        rotation={labRotation}
+        position={[0, -1, 0]}
+        scale={[1, 1, 1]}
+        rotation={[0, 0, 0]}
         clicked={clicked}
       />
     </Suspense>
