@@ -1,9 +1,10 @@
 /* eslint-disable react/no-unknown-property */
-import React, { useRef, useLayoutEffect } from "react";
+import { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import { a } from "@react-spring/three";
 import labScene from "./lab.glb";
+import * as THREE from "three";
 
 const Lab = (props) => {
   const labRef = useRef();
