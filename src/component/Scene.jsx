@@ -6,6 +6,14 @@ import Lab from "../models/Lab/Lab";
 import { useRef } from "react";
 import * as THREE from "three";
 import MeshButton from "./MeshButton";
+import Message from "./Message";
+
+const msg = {
+  home: (<>Hello !</>),
+  skills: (<>skills</>),
+  blog: (<>blog</>),
+  contact: (<>contact</>)
+}
 
 export default function Scene({ view, clicked }) {
   const vec = new THREE.Vector3();
@@ -39,7 +47,25 @@ export default function Scene({ view, clicked }) {
       {view === "dev" && <axesHelper args={[5]} />}
       <OrbitControls />
       <Environment preset="night" background backgroundBlurriness={0.4} />
-    
+
+      {view === "skills" && (
+        <Message position={[-0.4, 0.8, 1.7]} rotation={[0, 1, 0]}>
+          <article class="text-white font-medium">
+          <p className="pb-4">ça c'est ma bibliothèque ! C'est la source de mes connaissances !</p>
+          <p> 
+            Spécialiste <strong>Front-End</strong>, je maitrise la plupart avec des technologies web moderne tel que <strong>React, NextJS, Typescript</strong> etc ...
+          </p>
+          </article>
+        </Message>
+      )}
+
+      {view === "blog" && (
+        <Message position={[0, 0, 0]} rotation={[0, 1, 0]}>
+          <article class="text-white font-medium">
+            Hello !
+          </article>
+        </Message>
+      )}
       <Lab
         position={[0, -1, 0]}
         scale={[1, 1, 1]}
