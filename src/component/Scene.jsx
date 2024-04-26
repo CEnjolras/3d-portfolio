@@ -36,9 +36,10 @@ export default function Scene({ view, clicked }) {
 
   return (
     <Suspense fallback={<Loader />}>
-      <axesHelper args={[5]} />
-      <Environment preset="night" background backgroundBlurriness={0.4} />
+      {view === "dev" && <axesHelper args={[5]} />}
       <OrbitControls />
+      <Environment preset="night" background backgroundBlurriness={0.4} />
+    
       <Lab
         position={[0, -1, 0]}
         scale={[1, 1, 1]}
