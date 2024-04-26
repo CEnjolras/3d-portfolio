@@ -25,7 +25,7 @@ export default function Header() {
             C.E
           </a>
         </div>
-        <div className="flex gap-x-4 gap-x-32">
+        <div className="flex gap-x-4 lg:gap-x-32">
           {navigation.map((item) => (
             <NavLink
               key={item.name}
