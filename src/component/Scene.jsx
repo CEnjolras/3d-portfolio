@@ -22,7 +22,7 @@ export default function Scene({ view, clicked }) {
     
     if (view === "home") {
       if(window.innerWidth < 768) {
-        state.camera.position.lerp(vecPos.set(2, 5, 8), 0.075);
+        state.camera.position.lerp(vecPos.set(7, 5, 3), 0.075);
       }else{
         state.camera.position.lerp(vecPos.set(2, 4.5, 3), 0.075);
       }
