@@ -21,7 +21,11 @@ export default function Scene({ view, clicked }) {
 
     
     if (view === "home") {
-      state.camera.position.lerp(vecPos.set(2, 4.5, 3), 0.075);
+      if(window.innerWidth < 768) {
+        state.camera.position.lerp(vecPos.set(2, 5, 8), 0.075);
+      }else{
+        state.camera.position.lerp(vecPos.set(2, 4.5, 3), 0.075);
+      }
       lookAtPos.lerp(vecLook.set(0,0,0), 0.075)
 
       state.camera.updateProjectionMatrix();
@@ -57,15 +61,15 @@ export default function Scene({ view, clicked }) {
 
       <Lab
         position={[0, -1, 0]}
-        scale={[1, 1, 1]}
+        scale={window.innerWidth < 768 ? [1, 1, 1] : [1 ,1 ,1]} 
         rotation={[0, 0, 0]}
         clicked={clicked}
       />
-      
+
       <MeshButton to="/skills" position={[-0.4, 0.8, 1.7]} rotation={[0, 1, 0]} />
       <MeshButton to="/contact" position={[.05, .35, -.3]} rotation={[0, 1, 0]} />
       {view !=="contact" &&
-        <MeshButton to="/realisations" position={[-2.7, .7, 0]} rotation={[0, 1, 0]} />
+        <MeshButton to="/realisations" position={[-2.5, .75, 0]} rotation={[0, 1, 0]} />
       }
     </Suspense>
   );
