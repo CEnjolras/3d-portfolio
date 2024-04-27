@@ -1,20 +1,16 @@
 import { Html } from "@react-three/drei";
-import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-export default function MeshButton({ children, ...props }) {
+export default function MeshButton({ children, to, ...props }) {
+  const navigate = useNavigate();
   return (
-    <group {...props}>
-      {/* White border */}
-      <mesh position={[0, 0, -0.01]}>
-        <circleGeometry args={[0.06, 32]} />
-        <meshBasicMaterial color="white" opacity={0.5} transparent />
-      </mesh>
 
-      {/* Black circle */}
-      <mesh>
-        <circleGeometry args={[0.05, 32]} />
-        <meshBasicMaterial color="black" opacity={0.8} transparent />
-      </mesh>
-    </group>
+    <Html distanceFactor={10} {...props}>
+        <div 
+          onClick={() => { navigate(to); }}
+          className="z-100 absolute hover:cursor-pointer h-3 w-3 pointer-events-auto rounded-full bg-black bg-opacity-70 shadow-lg ring-2 ring-white ring-opacity-50" 
+        />
+    </Html>
+
   );
 }

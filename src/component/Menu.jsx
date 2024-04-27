@@ -1,20 +1,15 @@
 import { useState } from "react";
-import { Dialog } from "@headlessui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { NavLink } from "react-router-dom";
 
 const navigation = [
   { name: "Home", href: "/" },
   { name: "Skills", href: "/skills" },
-  { name: "Blog", href: "/blog" },
+  { name: "Realisations", href: "/realisations" },
   { name: "Contact", href: "/contact" },
 ];
 
-export default function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
+export default function Menu() {
   return (
-    <header>
       <nav
         className="mx-auto flex items-center justify-between p-6 lg:px-8"
         aria-label="Global"
@@ -30,15 +25,14 @@ export default function Header() {
             <NavLink
               key={item.name}
               to={item.href}
-              className="text-xl font-semibold leading-6 text-white"
+              className="text-sm font-semibold leading-6 text-gray-300"
             >
-              {item.name}
+              {item.name} 
             </NavLink>
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
         </div>
       </nav>
-    </header>
   );
 }

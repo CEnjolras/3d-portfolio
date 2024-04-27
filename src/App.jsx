@@ -7,7 +7,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Home view="home" />} />
       <Route path="/skills" element={<Home view="skills" />} />
-      <Route path="/blog" element={<Home view="blog" />} />
+      <Route path="/realisations" element={<Home view="realisations" />} />
       <Route path="/contact" element={<Home view="contact" />} />
       <Route path="/dev" element={<Home view="dev" />} />
       <Route path="*" element={<NotFound />} />
