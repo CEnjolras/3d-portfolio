@@ -8,7 +8,7 @@ import MeshButton from "./MeshButton";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router-dom";
 
-export default function Scene({ view, clicked }) {
+export default function Scene({ view, clicked, setLoading }) {
   const navigate = useNavigate();
   const lookAtPos = new THREE.Vector3();
   const vecPos = new THREE.Vector3();
@@ -20,12 +20,8 @@ export default function Scene({ view, clicked }) {
     if (view !== "dev") state.camera.lookAt(lookAtPos);
 
     if (view === "home") {
-      if (window.innerWidth < 768) {
-        state.camera.position.lerp(vecPos.set(7, 5, 3), 0.075);
-      } else {
-        state.camera.position.lerp(vecPos.set(2, 2, 4), 0.075);
-      }
-      lookAtPos.lerp(vecLook.set(0, 0, 0), 0.075);
+      state.camera.position.lerp(vecPos.set(2, 2, 4), 0.1);
+      lookAtPos.lerp(vecLook.set(0, 0, 0), 0.1);
 
       state.camera.updateProjectionMatrix();
     }
@@ -82,11 +78,12 @@ export default function Scene({ view, clicked }) {
           label="contact"
         />
       )}
-      {view !== "realisations" && view !== "home" && view !== "skills" && (
+      {view !== "realisations" && (
         <MeshButton
           to="/realisations"
-          position={[-2.5, 0.2, -0.5]}
+          position={[-1.5, 0.2, -0.5]}
           rotation={[0, 1, 0]}
+          distanceFactor={8}
           label="realisations"
         />
       )}

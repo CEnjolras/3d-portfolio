@@ -1,9 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import Scene from "../component/Scene";
-import Menu from "../component/Menu";
 import Message from "../component/Message";
 import Strong from "../component/Strong";
-import CvLine from "../component/CvLine";
 import MenuBottom from "../component/MenuBottom.jsx";
 
 const messages = {
