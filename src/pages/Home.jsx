@@ -49,18 +49,10 @@ const messages = {
   },
   realisations: {
     jsx: (
-      <li className="mb-12">
-        <CvLine
-          dates="2019 — Present"
-          title="Développeur Freelance"
-          tags={["JavaScript", "TypeScript", "React", "Storybook"]}
-        >
-          Freelance depuis 2019, mon expérience s'est principalement concentrée
-          sur le développement d'applications web.
-        </CvLine>
-      </li>
+     <p>
+         Voici quelques uns de mes anciens travaux, je vous invite à les consulter pour en savoir plus sur mes compétences.
+     </p>
     ),
-    width: "w-[1024px]",
   },
 };
 
@@ -71,7 +63,7 @@ export default function Home({ view = "home" }) {
         <Menu />
       </nav>
 
-      <Message width={messages[view].width}>{messages[view].jsx}</Message>
+        {messages[view] && <Message width={messages[view].width}>{messages[view].jsx}</Message>}
 
       <Canvas
         className="w-full h-screen bg-transparent relative z-10"
