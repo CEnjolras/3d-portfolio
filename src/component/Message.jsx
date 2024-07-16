@@ -3,7 +3,7 @@ import avatar from "../assets/man.webp";
 export default function Message({ children, width = "w-[500px]" }) {
   return (
     <div
-      className={`${width} absolute max-w-[85%] bottom-20 lg:bottom-32 left-0 right-0 m-auto z-20 text-white pointer-events-auto rounded-lg bg-black bg-opacity-70 shadow-lg ring-1 ring-black ring-opacity-5`}
+      className={`${width} absolute max-w-[85%] bottom-20 lg:bottom-28 left-0 right-0 m-auto z-20 text-white pointer-events-auto rounded-lg bg-black bg-opacity-70 shadow-lg ring-1 ring-black ring-opacity-5`}
     >
       <div className="p-4">
         <div className="flex items-start">
