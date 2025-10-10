@@ -1,0 +1,10 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /$
+Disallow: /home
+Disallow: /skills
+Disallow: /realisations
+Disallow: /contact
+Disallow: /dev
+
+Sitemap: https://clementenjolras.fr/sitemap.xml

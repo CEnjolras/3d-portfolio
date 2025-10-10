@@ -1,8 +1,62 @@
-# React + Vite
+# 3D Portfolio - Clément Enjolras
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Portfolio WebGL interactif construit avec React, Three.js et Vite.
 
-Currently, two official plugins are available:
+## 🚀 Fonctionnalités
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Expérience 3D immersive** avec React Three Fiber
+- **Page d'attente élégante** avec animations WebGL et particules
+- **Design moderne** avec Tailwind CSS
+- **SEO optimisé** pour maintenir le classement Google
+- **Analytics Vercel** intégré pour le suivi des performances
+- **Performance optimisée** avec chargement lazy et code splitting
+
+## 🛠️ Stack Technique
+
+- **Frontend**: React 18, React Router
+- **3D**: Three.js, React Three Fiber, React Three Drei
+- **Styling**: Tailwind CSS
+- **Build**: Vite
+- **Analytics**: Vercel Analytics
+- **Déploiement**: Vercel
+
+## 📦 Installation
+
+```bash
+npm install
+```
+
+## 🏃‍♂️ Développement
+
+```bash
+npm run dev
+```
+
+## 🏗️ Build
+
+```bash
+npm run build
+```
+
+## 🔍 SEO
+
+Le site inclut:
+- Meta tags optimisés (titre, description, keywords)
+- Open Graph pour les réseaux sociaux
+- Twitter Cards
+- Structured Data (Schema.org)
+- Sitemap.xml
+- Robots.txt
+- URL canoniques
+
+## 📊 Analytics
+
+Vercel Analytics est configuré pour tracker:
+- Pages vues
+- Temps de chargement
+- Interactions utilisateur
+- Performance Web Vitals
+
+## 📄 License
+
+© 2025 Clément Enjolras - Tous droits réservés
