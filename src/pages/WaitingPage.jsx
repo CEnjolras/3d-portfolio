@@ -1,144 +1,307 @@
-import { useEffect, useState } from 'react';
+import { Canvas, useFrame, useThree, extend } from "@react-three/fiber";
+import { 
+  Environment,
+  Float,
+  MeshDistortMaterial,
+  shaderMaterial
+} from "@react-three/drei";
+import { useRef, useMemo, useEffect } from "react";
+import * as THREE from "three";
 
-export default function WaitingPage() {
-  const [particles, setParticles] = useState([]);
+// Custom gradient shader material
+const GradientMaterial = shaderMaterial(
+  { 
+    time: 0,
+    color1: new THREE.Color(0.5, 0.1, 0.8),
+    color2: new THREE.Color(0.1, 0.5, 1.0)
+  },
+  // Vertex shader
+  `
+    varying vec2 vUv;
+    varying vec3 vPosition;
+    uniform float time;
+    
+    void main() {
+      vUv = uv;
+      vPosition = position;
+      vec3 pos = position;
+      pos.z += sin(pos.x * 2.0 + time) * 0.1;
+      pos.z += sin(pos.y * 2.0 + time * 0.5) * 0.1;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+    }
+  `,
+  // Fragment shader
+  `
+    uniform vec3 color1;
+    uniform vec3 color2;
+    uniform float time;
+    varying vec2 vUv;
+    varying vec3 vPosition;
+    
+    void main() {
+      vec3 color = mix(color1, color2, vUv.y);
+      float alpha = smoothstep(0.0, 1.0, vUv.y);
+      gl_FragColor = vec4(color, alpha * 0.6);
+    }
+  `
+);
 
-  useEffect(() => {
-    // Generate random particles
-    const newParticles = Array.from({ length: 20 }, (_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      animationDuration: 3 + Math.random() * 4,
-      delay: Math.random() * 2,
-      size: 4 + Math.random() * 8,
-    }));
-    setParticles(newParticles);
-  }, []);
+extend({ GradientMaterial });
+
+// Abstract mesh layers
+function AbstractLayer({ z, speed, color }) {
+  const meshRef = useRef();
+  
+  useFrame((state) => {
+    meshRef.current.rotation.z = state.clock.elapsedTime * speed;
+    meshRef.current.material.opacity = 0.03 + Math.sin(state.clock.elapsedTime * 0.5) * 0.02;
+  });
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Animated gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/20 via-purple-500/20 to-pink-500/20 animate-gradient-xy"></div>
-      
-      {/* Floating particles */}
-      <div className="absolute inset-0">
-        {particles.map((particle) => (
-          <div
-            key={particle.id}
-            className="absolute rounded-full bg-white/30 backdrop-blur-sm animate-float"
-            style={{
-              left: `${particle.left}%`,
-              width: `${particle.size}px`,
-              height: `${particle.size}px`,
-              animationDuration: `${particle.animationDuration}s`,
-              animationDelay: `${particle.delay}s`,
-            }}
-          />
-        ))}
+    <mesh ref={meshRef} position={[0, 0, z]}>
+      <planeGeometry args={[30, 30, 32, 32]} />
+      <meshBasicMaterial
+        color={color}
+        wireframe
+        transparent
+        opacity={0.03}
+        blending={THREE.AdditiveBlending}
+      />
+    </mesh>
+  );
+}
+
+// Morphing blob with distortion
+function MorphingBlob({ position, color }) {
+  const meshRef = useRef();
+  
+  useFrame((state) => {
+    meshRef.current.rotation.x = state.clock.elapsedTime * 0.15;
+    meshRef.current.rotation.y = state.clock.elapsedTime * 0.1;
+  });
+
+  return (
+    <Float speed={1} rotationIntensity={0.5} floatIntensity={1}>
+      <mesh ref={meshRef} position={position}>
+        <icosahedronGeometry args={[1.2, 20]} />
+        <MeshDistortMaterial
+          color={color}
+          metalness={0.8}
+          roughness={0.2}
+          distort={0.6}
+          speed={2}
+          emissive={color}
+          emissiveIntensity={0.5}
+        />
+      </mesh>
+    </Float>
+  );
+}
+
+// Elegant particles with custom behavior
+function ParticleSystem() {
+  const pointsRef = useRef();
+  const count = 2000;
+
+  const positions = useMemo(() => {
+    const pos = new Float32Array(count * 3);
+
+    for (let i = 0; i < count; i++) {
+      const radius = 5 + Math.random() * 15;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos((Math.random() * 2) - 1);
+
+      pos[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+      pos[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+      pos[i * 3 + 2] = radius * Math.cos(phi);
+    }
+
+    return pos;
+  }, []);
+
+  useFrame((state) => {
+    const time = state.clock.elapsedTime;
+    const positions = pointsRef.current.geometry.attributes.position.array;
+
+    for (let i = 0; i < count; i++) {
+      positions[i * 3] += Math.sin(time * 0.5 + i) * 0.001;
+      positions[i * 3 + 1] += Math.cos(time * 0.3 + i) * 0.001;
+    }
+
+    pointsRef.current.geometry.attributes.position.needsUpdate = true;
+    pointsRef.current.rotation.y = time * 0.03;
+  });
+
+  return (
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={count}
+          array={positions}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.03}
+        color="#00ffff"
+        transparent
+        opacity={0.6}
+        sizeAttenuation
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+      />
+    </points>
+  );
+}
+
+// Postprocessing effect simulation
+function PostEffectPlane() {
+  const meshRef = useRef();
+  
+  useFrame((state) => {
+    if (meshRef.current) {
+      meshRef.current.material.uniforms.time.value = state.clock.elapsedTime;
+    }
+  });
+
+  return (
+    <mesh ref={meshRef} position={[0, 0, -10]}>
+      <planeGeometry args={[50, 50]} />
+      <gradientMaterial transparent />
+    </mesh>
+  );
+}
+
+// Camera rig with smooth mouse interaction
+function CameraRig() {
+  const { camera } = useThree();
+  const mouseX = useRef(0);
+  const mouseY = useRef(0);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      mouseX.current = (e.clientX / window.innerWidth) * 2 - 1;
+      mouseY.current = -(e.clientY / window.innerHeight) * 2 + 1;
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  useFrame(() => {
+    camera.position.x = THREE.MathUtils.lerp(camera.position.x, mouseX.current * 0.5, 0.03);
+    camera.position.y = THREE.MathUtils.lerp(camera.position.y, mouseY.current * 0.5, 0.03);
+    camera.lookAt(0, 0, 0);
+  });
+
+  return null;
+}
+
+function Scene() {
+  return (
+    <>
+      <color attach="background" args={["#0a0015"]} />
+      <fog attach="fog" args={["#0a0015", 10, 35]} />
+
+      {/* Sophisticated lighting setup */}
+      <Environment preset="sunset" />
+      <ambientLight intensity={0.2} />
+      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} color="#ff00ff" castShadow />
+      <spotLight position={[-10, 10, -10]} angle={0.15} penumbra={1} intensity={1} color="#00ffff" castShadow />
+      <pointLight position={[-10, -10, -5]} intensity={0.8} color="#ff1493" />
+      <pointLight position={[10, -10, 5]} intensity={0.8} color="#00bfff" />
+
+      {/* Morphing blobs */}
+      <MorphingBlob position={[-4, 2, -3]} color="#ff00ff" />
+      <MorphingBlob position={[4, -2, -2]} color="#00ffff" />
+
+      {/* Abstract wireframe layers */}
+      <AbstractLayer z={-5} speed={0.02} color="#ff00ff" />
+      <AbstractLayer z={-8} speed={-0.015} color="#00ffff" />
+      <AbstractLayer z={-12} speed={0.01} color="#7700ff" />
+
+      {/* Particle system */}
+      <ParticleSystem />
+
+      {/* Background gradient effect */}
+      <PostEffectPlane />
+
+      {/* Interactive camera */}
+      <CameraRig />
+    </>
+  );
+}
+
+export default function WaitingPage() {
+  return (
+    <div className="w-screen h-screen relative overflow-hidden bg-gradient-to-br from-purple-950 via-black to-blue-950">
+      {/* Grain texture overlay */}
+      <div className="absolute inset-0 opacity-[0.015] pointer-events-none mix-blend-overlay">
+        <svg width="100%" height="100%">
+          <filter id="noise">
+            <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/>
+          </filter>
+          <rect width="100%" height="100%" filter="url(#noise)"/>
+        </svg>
       </div>
 
-      {/* Grid pattern overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.05)_1px,transparent_1px)] bg-[size:100px_100px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,black,transparent)]"></div>
+      {/* 3D Canvas with premium settings */}
+      <Canvas
+        shadows
+        dpr={[1, 2]}
+        camera={{ position: [0, 0, 8], fov: 45 }}
+        gl={{ 
+          antialias: true, 
+          alpha: false,
+          powerPreference: "high-performance"
+        }}
+      >
+        <Scene />
+      </Canvas>
 
-      {/* Main content */}
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 text-center">
-        {/* Logo/Icon */}
-        <div className="mb-8 animate-pulse-slow">
-          <div className="mx-auto h-24 w-24 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 p-1 shadow-2xl shadow-purple-500/50">
-            <div className="flex h-full w-full items-center justify-center rounded-full bg-slate-900">
-              <span className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                CE
-              </span>
-            </div>
+      {/* Sophisticated UI Overlay */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+        <div className="flex flex-col items-center gap-12">
+          {/* Main message */}
+          <div className="flex flex-col items-center gap-6">
+            <h1 className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 text-7xl md:text-9xl font-extralight tracking-[0.25em]">
+              SOON
+            </h1>
+            <div className="h-px w-32 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500"></div>
+            <p className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-cyan-300 text-sm md:text-base font-light tracking-[0.3em] uppercase">
+              Portfolio Under Construction
+            </p>
           </div>
-        </div>
-
-        {/* Main heading */}
-        <h1 className="mb-4 text-5xl md:text-7xl font-bold text-white animate-fade-in-up">
-          Coming Soon
-        </h1>
-        
-        {/* Subheading */}
-        <p className="mb-8 max-w-2xl text-xl md:text-2xl text-gray-300 animate-fade-in-up animation-delay-200">
-          Something amazing is in the works
-        </p>
-
-        {/* Description */}
-        <p className="mb-12 max-w-xl text-base md:text-lg text-gray-400 animate-fade-in-up animation-delay-400">
-          I'm currently crafting a new portfolio experience. Stay tuned for an immersive journey through my projects and skills.
-        </p>
-
-        {/* Loading bar */}
-        <div className="mb-12 w-full max-w-md animate-fade-in-up animation-delay-600">
-          <div className="h-2 rounded-full bg-slate-800/50 backdrop-blur-sm overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 animate-loading-bar rounded-full"></div>
-          </div>
-        </div>
-
-        {/* Social links or contact info */}
-        <div className="flex gap-6 animate-fade-in-up animation-delay-800">
-          <a
-            href="https://github.com/CEnjolras"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group rounded-full bg-white/10 p-4 backdrop-blur-sm transition-all duration-300 hover:bg-white/20 hover:scale-110 hover:shadow-lg hover:shadow-purple-500/50"
-          >
-            <svg
-              className="h-6 w-6 text-white transition-transform group-hover:rotate-12"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fillRule="evenodd"
-                d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </a>
           
-          <a
-            href="mailto:contact@yourmail.com"
-            className="group rounded-full bg-white/10 p-4 backdrop-blur-sm transition-all duration-300 hover:bg-white/20 hover:scale-110 hover:shadow-lg hover:shadow-purple-500/50"
-          >
-            <svg
-              className="h-6 w-6 text-white transition-transform group-hover:rotate-12"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-              />
-            </svg>
-          </a>
-
-          <a
-            href="https://linkedin.com/in/yourprofile"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group rounded-full bg-white/10 p-4 backdrop-blur-sm transition-all duration-300 hover:bg-white/20 hover:scale-110 hover:shadow-lg hover:shadow-purple-500/50"
-          >
-            <svg
-              className="h-6 w-6 text-white transition-transform group-hover:rotate-12"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-            </svg>
-          </a>
-        </div>
-
-        {/* Footer text */}
-        <div className="mt-16 text-sm text-gray-500 animate-fade-in-up animation-delay-1000">
-          <p>Expected launch: Soon™</p>
+          {/* Animated pulse */}
+          <div className="flex items-center gap-2">
+            <div className="w-12 h-px bg-white/10"></div>
+            <div className="relative">
+              <div className="w-1.5 h-1.5 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full"></div>
+              <div className="absolute inset-0 w-1.5 h-1.5 bg-pink-400 rounded-full animate-ping"></div>
+            </div>
+            <div className="w-12 h-px bg-white/10"></div>
+          </div>
         </div>
       </div>
 
-      {/* Bottom gradient */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-900 to-transparent"></div>
+      {/* Refined corner details */}
+      <div className="absolute top-8 left-8 text-white/30 text-[10px] font-extralight tracking-[0.3em] uppercase">
+        Clément Enjolras
+      </div>
+      
+      <div className="absolute top-8 right-8 text-white/30 text-[10px] font-extralight tracking-[0.3em] uppercase">
+        2025
+      </div>
+
+      <div className="absolute bottom-8 left-8 text-white/30 text-[10px] font-extralight tracking-[0.3em] uppercase">
+        WebGL Experience
+      </div>
+      
+      <div className="absolute bottom-8 right-8 text-white/30 text-[10px] font-extralight tracking-[0.3em] uppercase">
+        Coming Soon
+      </div>
     </div>
   );
 }
