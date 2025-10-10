@@ -1,8 +1,16 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
+/* Specify source files for Tailwind to scan */
+@source "../**/*.{html,jsx,tsx,js,ts}";
+
+/* Custom theme configuration */
+@theme {
+  /* Add custom theme variables here if needed */
+  /* Example: --color-brand: #243c5a; */
+}
+
+/* Custom styles */
 .active {
-  @apply underline;
-  @apply text-white;
+  text-decoration: underline;
+  color: white;
 }

@@ -1,22 +1,23 @@
-# 3D Portfolio - Clément Enjolras
+# Portfolio Coming Soon - Clément Enjolras
 
-Portfolio WebGL interactif construit avec React, Three.js et Vite.
+Page d'attente élégante avec animations WebGL et particules 3D.
 
 ## 🚀 Fonctionnalités
 
-- **Expérience 3D immersive** avec React Three Fiber
-- **Page d'attente élégante** avec animations WebGL et particules
-- **Design moderne** avec Tailwind CSS
-- **SEO optimisé** pour maintenir le classement Google
-- **Analytics Vercel** intégré pour le suivi des performances
-- **Performance optimisée** avec chargement lazy et code splitting
+- **Expérience 3D interactive** avec React Three Fiber
+- **Système de particules** avec animation fluide
+- **Effets de fond subtils** avec torus animés
+- **Interaction mouse parallax** sur la caméra
+- **Design minimaliste** avec Tailwind CSS
+- **SEO optimisé** pour le référencement
+- **Vercel Analytics** intégré
 
 ## 🛠️ Stack Technique
 
-- **Frontend**: React 18, React Router
+- **Frontend**: React 18
 - **3D**: Three.js, React Three Fiber, React Three Drei
 - **Styling**: Tailwind CSS
-- **Build**: Vite
+- **Build**: Vite 7
 - **Analytics**: Vercel Analytics
 - **Déploiement**: Vercel
 
@@ -45,8 +46,8 @@ Le site inclut:
 - Open Graph pour les réseaux sociaux
 - Twitter Cards
 - Structured Data (Schema.org)
-- Sitemap.xml
-- Robots.txt
+- Sitemap.xml (homepage uniquement)
+- Robots.txt (autres pages bloquées)
 - URL canoniques
 
 ## 📊 Analytics
@@ -55,7 +56,7 @@ Vercel Analytics est configuré pour tracker:
 - Pages vues
 - Temps de chargement
 - Interactions utilisateur
-- Performance Web Vitals
+- Web Vitals
 
 ## 📄 License
 
