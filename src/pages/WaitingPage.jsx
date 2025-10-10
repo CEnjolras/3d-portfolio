@@ -8,16 +8,16 @@ function SubtleLayer({ z, speed }) {
   
   useFrame((state) => {
     meshRef.current.rotation.z = state.clock.elapsedTime * speed;
-    meshRef.current.material.opacity = 0.015 + Math.sin(state.clock.elapsedTime * 0.3) * 0.01;
+    meshRef.current.material.opacity = 0.025 + Math.sin(state.clock.elapsedTime * 0.3) * 0.015;
   });
 
   return (
     <mesh ref={meshRef} position={[0, 0, z]}>
       <torusGeometry args={[8, 0.05, 8, 100]} />
       <meshBasicMaterial
-        color="#8877ff"
+        color="#9988ff"
         transparent
-        opacity={0.015}
+        opacity={0.025}
         blending={THREE.AdditiveBlending}
       />
     </mesh>
@@ -199,7 +199,7 @@ export default function WaitingPage() {
       </div>
       
       <a 
-        href="https://www.linkedin.com/in/clément-enjolras-30958ab4/" 
+        href="https://www.linkedin.com/in/cl%C3%A9ment-e-30958ab4/" 
         target="_blank" 
         rel="noopener noreferrer"
         className="absolute bottom-8 right-8 text-white/30 hover:text-white/60 text-[10px] font-extralight tracking-[0.3em] uppercase transition-colors duration-300 pointer-events-auto group"
