@@ -194,7 +194,7 @@ export default function WaitingPage() {
             </div>
 
             {/* Corner details */}
-            <div className="absolute top-8 left-8 text-white/30 text-[10px] font-extralight tracking-[0.3em] uppercase">
+            <div className="absolute top-8 left-8 text-white/30 text-xs font-extralight tracking-[0.3em] uppercase">
                 Clément Enjolras
             </div>
 
@@ -202,7 +202,7 @@ export default function WaitingPage() {
                 href="https://www.linkedin.com/in/cl%C3%A9ment-e-30958ab4/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="absolute bottom-8 right-8 text-white/30 hover:text-white/60 text-[10px] font-extralight tracking-[0.3em] uppercase transition-colors duration-300 pointer-events-auto group"
+                className="absolute bottom-8 right-8 text-white/30 hover:text-white/60 text-xs font-extralight tracking-[0.3em] uppercase transition-colors duration-300 pointer-events-auto group"
             >
                 <span className="relative">
                     LinkedIn
